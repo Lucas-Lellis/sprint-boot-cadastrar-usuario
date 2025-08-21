@@ -1,6 +1,6 @@
 package net.codejava.sprint_boot_cadastrar_usuario.controller;
 
-import net.codejava.sprint_boot_cadastrar_usuario.model.Usuario;
+import net.codejava.sprint_boot_cadastrar_usuario.dto.UsuarioDTO;
 import net.codejava.sprint_boot_cadastrar_usuario.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,21 +18,21 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<Usuario> inserirUsuario(@RequestBody Usuario usuario) {
-        Usuario usuarioInserido = usuarioService.inserirUsuario(usuario);
+    public ResponseEntity<UsuarioDTO> inserirUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+        UsuarioDTO usuarioInserido = usuarioService.inserirUsuario(usuarioDTO);
         return new ResponseEntity<>(usuarioInserido, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> buscarTodosUsuarios() {
-        List<Usuario> usuarios = usuarioService.buscarTodosUsuarios();
-        return new ResponseEntity<>(usuarios, HttpStatus.OK);
+    public ResponseEntity<List<UsuarioDTO>> buscarTodosUsuarios() {
+        List<UsuarioDTO> usuariosDTO = usuarioService.buscarTodosUsuarios();
+        return new ResponseEntity<>(usuariosDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarUsuarioId(@PathVariable Long id) {
-        Optional<Usuario> usuario = usuarioService.buscarUsuarioId(id);
-        return usuario.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+    public ResponseEntity<UsuarioDTO> buscarUsuarioId(@PathVariable Long id) {
+        Optional<UsuarioDTO> usuarioDTO = usuarioService.buscarUsuarioId(id);
+        return usuarioDTO.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -40,5 +40,11 @@ public class UsuarioController {
     public ResponseEntity<Void> deletarUsuario(@PathVariable Long id) {
         usuarioService.deletarUsuario(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+        UsuarioDTO usuarioAtualizado = usuarioService.atualizarUsuario(id, usuarioDTO);
+        return new ResponseEntity<>(usuarioAtualizado, HttpStatus.OK);
     }
 }
