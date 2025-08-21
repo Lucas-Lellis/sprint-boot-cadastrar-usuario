@@ -14,10 +14,13 @@ import java.util.Optional;
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-    @PostMapping
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
+    @PostMapping("/registro")
     public ResponseEntity<UsuarioDTO> inserirUsuario(@RequestBody UsuarioDTO usuarioDTO) {
         UsuarioDTO usuarioInserido = usuarioService.inserirUsuario(usuarioDTO);
         return new ResponseEntity<>(usuarioInserido, HttpStatus.CREATED);

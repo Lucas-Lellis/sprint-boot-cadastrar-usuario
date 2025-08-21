@@ -5,6 +5,7 @@ import net.codejava.sprint_boot_cadastrar_usuario.exception.ResourceNotFoundExce
 import net.codejava.sprint_boot_cadastrar_usuario.model.Usuario;
 import net.codejava.sprint_boot_cadastrar_usuario.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +15,20 @@ import java.util.stream.Collectors;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public UsuarioDTO inserirUsuario(UsuarioDTO usuarioDTO) {
-        Usuario usuario = new Usuario(usuarioDTO.getNome(), usuarioDTO.getEmail(), usuarioDTO.getSenha());
+        Usuario usuario = new Usuario();
+        usuario.setNome(usuarioDTO.getNome());
+        usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+
         Usuario usuarioInserido = usuarioRepository.save(usuario);
         return new UsuarioDTO(usuarioInserido.getId(), usuarioInserido.getNome(), usuarioInserido.getEmail()
                 , usuarioInserido.getSenha());
@@ -55,12 +65,11 @@ public class UsuarioService {
         if (usuarioDTO.getEmail() != null) {
             usuarioExistente.setEmail(usuarioDTO.getEmail());
         }
-        if (usuarioDTO.getSenha() != null) {
-            usuarioExistente.setSenha(usuarioDTO.getSenha());
+        if (usuarioDTO.getSenha() != null && !usuarioDTO.getSenha().isEmpty()) {
+            usuarioExistente.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         }
 
         Usuario usuarioAtualizado = usuarioRepository.save(usuarioExistente);
-
         return new UsuarioDTO(usuarioAtualizado.getId(), usuarioAtualizado.getNome(), usuarioAtualizado.getEmail()
                 , usuarioAtualizado.getSenha());
     }
