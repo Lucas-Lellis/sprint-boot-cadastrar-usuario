@@ -43,7 +43,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Novo Bean para o AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
