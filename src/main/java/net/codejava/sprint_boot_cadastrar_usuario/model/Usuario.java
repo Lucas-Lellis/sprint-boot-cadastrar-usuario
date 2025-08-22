@@ -2,7 +2,6 @@ package net.codejava.sprint_boot_cadastrar_usuario.model;
 
 import jakarta.persistence.*;
 
-import javax.annotation.processing.Generated;
 import java.util.Objects;
 
 @Entity

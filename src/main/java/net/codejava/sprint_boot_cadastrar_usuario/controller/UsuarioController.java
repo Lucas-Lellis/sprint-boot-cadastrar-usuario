@@ -2,7 +2,6 @@ package net.codejava.sprint_boot_cadastrar_usuario.controller;
 
 import net.codejava.sprint_boot_cadastrar_usuario.dto.UsuarioDTO;
 import net.codejava.sprint_boot_cadastrar_usuario.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

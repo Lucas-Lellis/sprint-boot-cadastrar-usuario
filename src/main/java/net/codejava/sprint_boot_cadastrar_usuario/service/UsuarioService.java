@@ -4,7 +4,6 @@ import net.codejava.sprint_boot_cadastrar_usuario.dto.UsuarioDTO;
 import net.codejava.sprint_boot_cadastrar_usuario.exception.ResourceNotFoundException;
 import net.codejava.sprint_boot_cadastrar_usuario.model.Usuario;
 import net.codejava.sprint_boot_cadastrar_usuario.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
