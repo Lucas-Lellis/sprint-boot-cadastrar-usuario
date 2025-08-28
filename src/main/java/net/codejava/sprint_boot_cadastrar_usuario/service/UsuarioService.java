@@ -24,6 +24,9 @@ public class UsuarioService {
     }
 
     public UsuarioDTO CadastrarUsuario(UsuarioDTO usuarioDTO) {
+        if (usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
+            throw new IllegalArgumentException("Este email já está cadastrado.");
+        }
         UsuarioModel usuario = new UsuarioModel();
         usuario.setNome(usuarioDTO.getNome());
         usuario.setEmail(usuarioDTO.getEmail());
@@ -77,16 +80,15 @@ public class UsuarioService {
     public UsuarioDTO loginUsuario(LoginDTO loginDTO) {
         Optional<UsuarioModel> usuarioModelOptional = usuarioRepository.findByEmail(loginDTO.getEmail());
 
-        if (usuarioModelOptional.isPresent()) {
-            UsuarioModel usuarioLogin = usuarioModelOptional.get();
-
-            if (passwordEncoder.matches(loginDTO.getSenha(), usuarioLogin.getSenha())) {
-                return new UsuarioDTO(usuarioLogin.getId(), usuarioLogin.getNome(), usuarioLogin.getEmail()
-                        , usuarioLogin.getSenha());
-            }
+        if (usuarioModelOptional.isEmpty()) {
+            throw new IllegalArgumentException("Email ou senha inválidos.");
         }
-
-        return null;
+        UsuarioModel usuarioLogin = usuarioModelOptional.get();
+        if (!passwordEncoder.matches(loginDTO.getSenha(), usuarioLogin.getSenha())) {
+            throw new IllegalArgumentException("Email ou senha inválidos.");
+        }
+        return new UsuarioDTO(usuarioLogin.getId(), usuarioLogin.getNome(), usuarioLogin.getEmail()
+                , usuarioLogin.getSenha());
     }
 
 }
