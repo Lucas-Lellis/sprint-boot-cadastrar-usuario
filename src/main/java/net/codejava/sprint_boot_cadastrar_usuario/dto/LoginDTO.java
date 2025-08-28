@@ -1,11 +1,18 @@
 package net.codejava.sprint_boot_cadastrar_usuario.dto;
 
-public class LoginRequest {
+import java.io.Serializable;
+
+public class LoginDTO implements Serializable {
 
     private String email;
     private String senha;
 
-    public LoginRequest() {
+    public LoginDTO() {
+    }
+
+    public LoginDTO(String senha, String email) {
+        this.senha = senha;
+        this.email = email;
     }
 
     public String getEmail() {

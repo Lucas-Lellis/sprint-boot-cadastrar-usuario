@@ -1,6 +1,6 @@
 package net.codejava.sprint_boot_cadastrar_usuario.security;
 
-import net.codejava.sprint_boot_cadastrar_usuario.model.Usuario;
+import net.codejava.sprint_boot_cadastrar_usuario.model.UsuarioModel;
 import net.codejava.sprint_boot_cadastrar_usuario.repository.UsuarioRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +18,7 @@ public class UsuarioDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByEmail(email)
+        UsuarioModel usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + email));
 
         return new UsuarioDetails(usuario);

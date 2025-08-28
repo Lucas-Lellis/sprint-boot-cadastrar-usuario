@@ -1,6 +1,6 @@
 package net.codejava.sprint_boot_cadastrar_usuario.security;
 
-import net.codejava.sprint_boot_cadastrar_usuario.model.Usuario;
+import net.codejava.sprint_boot_cadastrar_usuario.model.UsuarioModel;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,9 +9,9 @@ import java.util.Collections;
 
 public class UsuarioDetails implements UserDetails {
 
-    private final Usuario usuario;
+    private final UsuarioModel usuario;
 
-    public UsuarioDetails(Usuario usuario) {
+    public UsuarioDetails(UsuarioModel usuario) {
         this.usuario = usuario;
     }
 

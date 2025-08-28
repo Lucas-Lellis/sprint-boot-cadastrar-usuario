@@ -1,5 +1,6 @@
 package net.codejava.sprint_boot_cadastrar_usuario.controller;
 
+import net.codejava.sprint_boot_cadastrar_usuario.dto.LoginDTO;
 import net.codejava.sprint_boot_cadastrar_usuario.dto.UsuarioDTO;
 import net.codejava.sprint_boot_cadastrar_usuario.service.UsuarioService;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,8 @@ public class UsuarioController {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity<UsuarioDTO> inserirUsuario(@RequestBody UsuarioDTO usuarioDTO) {
-        UsuarioDTO usuarioInserido = usuarioService.inserirUsuario(usuarioDTO);
+    public ResponseEntity<UsuarioDTO> cadastrarUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+        UsuarioDTO usuarioInserido = usuarioService.CadastrarUsuario(usuarioDTO);
         return new ResponseEntity<>(usuarioInserido, HttpStatus.CREATED);
     }
 
@@ -48,5 +49,17 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDTO> atualizarUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
         UsuarioDTO usuarioAtualizado = usuarioService.atualizarUsuario(id, usuarioDTO);
         return new ResponseEntity<>(usuarioAtualizado, HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioDTO> loginUsuario(@RequestBody LoginDTO loginDTO) {
+        UsuarioDTO usuarioDTO = usuarioService.loginUsuario(loginDTO);
+
+        if (usuarioDTO != null) {
+            return new ResponseEntity<>(usuarioDTO, HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 }

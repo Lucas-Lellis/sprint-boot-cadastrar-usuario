@@ -1,8 +1,9 @@
 package net.codejava.sprint_boot_cadastrar_usuario.service;
 
+import net.codejava.sprint_boot_cadastrar_usuario.dto.LoginDTO;
 import net.codejava.sprint_boot_cadastrar_usuario.dto.UsuarioDTO;
 import net.codejava.sprint_boot_cadastrar_usuario.exception.ResourceNotFoundException;
-import net.codejava.sprint_boot_cadastrar_usuario.model.Usuario;
+import net.codejava.sprint_boot_cadastrar_usuario.model.UsuarioModel;
 import net.codejava.sprint_boot_cadastrar_usuario.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,19 +23,19 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UsuarioDTO inserirUsuario(UsuarioDTO usuarioDTO) {
-        Usuario usuario = new Usuario();
+    public UsuarioDTO CadastrarUsuario(UsuarioDTO usuarioDTO) {
+        UsuarioModel usuario = new UsuarioModel();
         usuario.setNome(usuarioDTO.getNome());
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
 
-        Usuario usuarioInserido = usuarioRepository.save(usuario);
-        return new UsuarioDTO(usuarioInserido.getId(), usuarioInserido.getNome(), usuarioInserido.getEmail()
-                , usuarioInserido.getSenha());
+        UsuarioModel usuarioCadastrado = usuarioRepository.save(usuario);
+        return new UsuarioDTO(usuarioCadastrado.getId(), usuarioCadastrado.getNome(), usuarioCadastrado.getEmail()
+                , usuarioCadastrado.getSenha());
     }
 
     public List<UsuarioDTO> buscarTodosUsuarios() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
+        List<UsuarioModel> usuarios = usuarioRepository.findAll();
         return usuarios.stream()
                 .map(usuario -> new UsuarioDTO(usuario.getId(), usuario.getNome(), usuario.getEmail()
                         , usuario.getSenha()))
@@ -55,7 +56,7 @@ public class UsuarioService {
     }
 
     public UsuarioDTO atualizarUsuario(Long id, UsuarioDTO usuarioDTO) {
-        Usuario usuarioExistente = usuarioRepository.findById(id)
+        UsuarioModel usuarioExistente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario com o ID " + id + " não encontrado"));
 
         if (usuarioDTO.getNome() != null) {
@@ -68,9 +69,24 @@ public class UsuarioService {
             usuarioExistente.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
         }
 
-        Usuario usuarioAtualizado = usuarioRepository.save(usuarioExistente);
+        UsuarioModel usuarioAtualizado = usuarioRepository.save(usuarioExistente);
         return new UsuarioDTO(usuarioAtualizado.getId(), usuarioAtualizado.getNome(), usuarioAtualizado.getEmail()
                 , usuarioAtualizado.getSenha());
+    }
+
+    public UsuarioDTO loginUsuario(LoginDTO loginDTO) {
+        Optional<UsuarioModel> usuarioModelOptional = usuarioRepository.findByEmail(loginDTO.getEmail());
+
+        if (usuarioModelOptional.isPresent()) {
+            UsuarioModel usuarioLogin = usuarioModelOptional.get();
+
+            if (passwordEncoder.matches(loginDTO.getSenha(), usuarioLogin.getSenha())) {
+                return new UsuarioDTO(usuarioLogin.getId(), usuarioLogin.getNome(), usuarioLogin.getEmail()
+                        , usuarioLogin.getSenha());
+            }
+        }
+
+        return null;
     }
 
 }
