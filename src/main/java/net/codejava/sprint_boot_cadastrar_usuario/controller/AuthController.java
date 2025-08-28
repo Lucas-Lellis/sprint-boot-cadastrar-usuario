@@ -1,7 +1,9 @@
 package net.codejava.sprint_boot_cadastrar_usuario.controller;
 
-import net.codejava.sprint_boot_cadastrar_usuario.model.LoginRequest;
+import net.codejava.sprint_boot_cadastrar_usuario.dto.LoginRequest;
+import net.codejava.sprint_boot_cadastrar_usuario.dto.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,20 +18,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    //@Autowired
-    private final AuthenticationManager authenticationManager;
-
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
+    private AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<String> autenticarUsuario(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication  = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getSenha()));
+    public ResponseEntity<LoginResponse> autenticarUsuario(@RequestBody LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getSenha()
+                    )
+            );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return ResponseEntity.ok("Login realizado com sucesso!");
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            LoginResponse response = new LoginResponse("Login bem-sucedido!");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            LoginResponse response = new LoginResponse("Falha no login. Verifique as credenciais.");
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
     }
 }

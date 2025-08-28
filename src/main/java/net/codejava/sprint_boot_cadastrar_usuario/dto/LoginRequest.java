@@ -1,14 +1,12 @@
-package net.codejava.sprint_boot_cadastrar_usuario.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package net.codejava.sprint_boot_cadastrar_usuario.dto;
 
 public class LoginRequest {
 
-    @JsonProperty("email")
     private String email;
-
-    @JsonProperty("senha")
     private String senha;
+
+    public LoginRequest() {
+    }
 
     public String getEmail() {
         return email;
